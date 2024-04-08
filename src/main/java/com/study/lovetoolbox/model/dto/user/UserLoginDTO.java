@@ -1,0 +1,18 @@
+package com.study.lovetoolbox.model.dto.user;
+
+import java.io.Serializable;
+import lombok.Data;
+
+/**
+ * 用户登录请求
+ *
+ */
+@Data
+public class UserLoginDTO implements Serializable {
+
+    private static final long serialVersionUID = 3191241716373120793L;
+
+    private String userAccount;
+
+    private String userPassword;
+}

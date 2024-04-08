@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.lovetoolbox.mapper.UserRelationMapper">
+
+    <resultMap id="BaseResultMap" type="com.study.lovetoolbox.model.entity.UserRelation">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userIdA" column="user_id_a" jdbcType="BIGINT"/>
+            <result property="userIdB" column="user_id_b" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id_a,user_id_b
+    </sql>
+</mapper>
