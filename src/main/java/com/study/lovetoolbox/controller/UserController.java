@@ -16,6 +16,7 @@ import com.study.lovetoolbox.model.vo.LoginUserVO;
 import com.study.lovetoolbox.model.vo.UserVO;
 import com.study.lovetoolbox.service.UserService;
 import com.study.lovetoolbox.service.impl.UserServiceImpl;
+import com.study.lovetoolbox.utils.AuthUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -125,14 +126,13 @@ public class UserController {
     /**
      * 获取当前登录用户
      *
-     * @param request
      * @return
      */
     @GetMapping("/get/login")
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "获取当前登录用户", notes = "")
-    public BaseResponse<UserVO> getLoginUser(HttpServletRequest request) {;
-        return ResultUtils.success(userService.getLoginUser(request));
+    public BaseResponse<UserVO> getLoginUser() {
+        return ResultUtils.success(AuthUtils.getCurrentUser());
     }
 
     // endregion
@@ -291,7 +291,7 @@ public class UserController {
         if (userUpdateMyRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        UserVO loginUser = userService.getLoginUser(request);
+        UserVO loginUser = AuthUtils.getCurrentUser();
         User user = new User();
         BeanUtils.copyProperties(userUpdateMyRequest, user);
         user.setId(loginUser.getId());
