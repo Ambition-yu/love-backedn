@@ -12,7 +12,6 @@ import com.study.lovetoolbox.exception.BusinessException;
 import com.study.lovetoolbox.exception.ThrowUtils;
 import com.study.lovetoolbox.model.dto.user.*;
 import com.study.lovetoolbox.model.entity.User;
-import com.study.lovetoolbox.model.vo.LoginUserVO;
 import com.study.lovetoolbox.model.vo.UserVO;
 import com.study.lovetoolbox.service.UserService;
 import com.study.lovetoolbox.service.impl.UserServiceImpl;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * 用户接口
@@ -41,31 +39,6 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    // region 登录相关
-
-    /**
-     * 用户注册
-     *
-     * @param dto
-     * @return
-     */
-    @PostMapping("/register")
-    @ApiOperationSupport(order = 1)
-    @ApiOperation(value = "用户注册", notes = "UserRegisterDTO")
-    public BaseResponse<Long> userRegister(@RequestBody UserRegisterDTO dto) {
-        if (ObjectUtils.isEmpty(dto)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        String userAccount = dto.getUserAccount();
-        String userPassword = dto.getUserPassword();
-        String checkPassword = dto.getCheckPassword();
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        long result = userService.userRegister(dto);
-        return ResultUtils.success(result);
-    }
-
     /**
      * 用户手机号注册
      *
@@ -75,7 +48,7 @@ public class UserController {
     // todo
     @PostMapping("/register-phone")
     @ApiOperationSupport(order = 1)
-    @ApiOperation(value = "用户注册", notes = "userRegisterRequest")
+    @ApiOperation(value = "用户手机号注册", notes = "userRegisterRequest")
     public BaseResponse<Long> userRegisterByPhone(@RequestBody UserRegisterDTO dto) {
         if (ObjectUtils.isEmpty(dto)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -93,7 +66,7 @@ public class UserController {
     @PostMapping("/login")
     @ApiOperationSupport(order = 2)
     @ApiOperation(value = "用户登录", notes = "userRegisterRequest")
-    public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginDTO userLoginRequest, HttpServletRequest request) {
+    public BaseResponse<UserVO> userLogin(@RequestBody UserLoginDTO userLoginRequest, HttpServletRequest request) {
         if (userLoginRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -102,19 +75,57 @@ public class UserController {
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        LoginUserVO loginUserVO = userService.userLogin(userAccount, userPassword, request);
+        UserVO loginUserVO = userService.userLogin(userAccount, userPassword, request, "1");
         return ResultUtils.success(loginUserVO);
     }
 
     /**
-     * 用户注销
+     * 申请绑定
+     *
+     * @param account
+     * @return
+     */
+    @PostMapping("/apply-binding-relationship")
+    @ApiOperationSupport(order = 2)
+    @ApiOperation(value = "申请绑定", notes = "对方account")
+    public BaseResponse<Boolean> applyBindingRelationship(String account) {
+        return ResultUtils.success(userService.applyBindingRelationship(account));
+    }
+
+    /**
+     * 绑定关系
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/binding-relationship")
+    @ApiOperationSupport(order = 2)
+    @ApiOperation(value = "申请绑定", notes = "消息id")
+    public BaseResponse<Boolean> bindingRelationship(Long id) {
+        return ResultUtils.success(userService.bindingRelationship(id));
+    }
+
+    /**
+     * 解绑
+     *
+     * @return
+     */
+    @PostMapping("/unbind-relationship")
+    @ApiOperationSupport(order = 2)
+    @ApiOperation(value = "解绑", notes = "")
+    public BaseResponse<Boolean> unbindRelationship() {
+        return ResultUtils.success(userService.unbindRelationship());
+    }
+
+    /**
+     * 退出登录
      *
      * @param request
      * @return
      */
     @PostMapping("/logout")
     @ApiOperationSupport(order = 5)
-    @ApiOperation(value = "用户注销", notes = "")
+    @ApiOperation(value = "退出登录", notes = "")
     public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
         if (request == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -134,10 +145,6 @@ public class UserController {
     public BaseResponse<UserVO> getLoginUser() {
         return ResultUtils.success(AuthUtils.getCurrentUser());
     }
-
-    // endregion
-
-    // region 增删改查
 
     /**
      * 创建用户
@@ -164,14 +171,13 @@ public class UserController {
     }
 
     /**
-     * 删除用户
+     * 用户注销-删除账号
      *
      * @param deleteRequest
      * @param request
      * @return
      */
     @PostMapping("/delete")
-    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -220,20 +226,6 @@ public class UserController {
     }
 
     /**
-     * 根据 id 获取包装类
-     *
-     * @param id
-     * @param request
-     * @return
-     */
-    @GetMapping("/get/vo")
-    public BaseResponse<UserVO> getUserVOById(long id, HttpServletRequest request) {
-        BaseResponse<User> response = getUserById(id, request);
-        User user = response.getData();
-        return ResultUtils.success(userService.getUserVO(user));
-    }
-
-    /**
      * 分页获取用户列表（仅管理员）
      *
      * @param userQueryRequest
@@ -251,30 +243,6 @@ public class UserController {
         return ResultUtils.success(userPage);
     }
 
-    /**
-     * 分页获取用户封装列表
-     *
-     * @param userQueryRequest
-     * @param request
-     * @return
-     */
-    @PostMapping("/list/page/vo")
-    public BaseResponse<Page<UserVO>> listUserVOByPage(@RequestBody UserQueryDTO userQueryRequest,
-            HttpServletRequest request) {
-        if (userQueryRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        long current = userQueryRequest.getCurrent();
-        long size = userQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<User> userPage = userService.page(new Page<>(current, size),
-                userService.getQueryWrapper(userQueryRequest));
-        Page<UserVO> userVOPage = new Page<>(current, size, userPage.getTotal());
-        List<UserVO> userVO = userService.getUserVO(userPage.getRecords());
-        userVOPage.setRecords(userVO);
-        return ResultUtils.success(userVOPage);
-    }
 
     // endregion
 
@@ -282,12 +250,10 @@ public class UserController {
      * 更新个人信息
      *
      * @param userUpdateMyRequest
-     * @param request
      * @return
      */
     @PostMapping("/update/my")
-    public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyDTO userUpdateMyRequest,
-            HttpServletRequest request) {
+    public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyDTO userUpdateMyRequest) {
         if (userUpdateMyRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

@@ -3,10 +3,13 @@ package com.study.lovetoolbox.controller;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.study.lovetoolbox.common.BaseResponse;
 import com.study.lovetoolbox.common.ResultUtils;
+import com.study.lovetoolbox.model.dto.menu.MenuDetailSaveDTO;
 import com.study.lovetoolbox.model.dto.menu.MenuSaveDTO;
 import com.study.lovetoolbox.model.entity.Menu;
+import com.study.lovetoolbox.model.entity.MenuDetail;
+import com.study.lovetoolbox.model.vo.MenuDetailListVO;
 import com.study.lovetoolbox.model.vo.MenuListVO;
-import com.study.lovetoolbox.service.MenuService;
+import com.study.lovetoolbox.service.MenuDetailService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +24,12 @@ import java.util.List;
  *
  */
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/menu-detail")
 @Slf4j
-public class MenuController {
+public class MenuDetailController {
 
     @Resource
-    private MenuService menuService;
+    private MenuDetailService menuDetailService;
 
     /**
      *  列表
@@ -34,9 +37,10 @@ public class MenuController {
     @GetMapping("/list")
     @ApiOperationSupport(order = 6)
     @ApiOperation(value = "列表", notes = "")
-    public BaseResponse<List<MenuListVO>> list() {
-        return ResultUtils.success(menuService.menuList());
+    public BaseResponse<List<MenuDetailListVO>> list(Long id) {
+        return ResultUtils.success(menuDetailService.getList(id));
     }
+
 
     /**
      * 菜单接口 新增
@@ -44,8 +48,9 @@ public class MenuController {
     @PostMapping("/submit")
     @ApiOperationSupport(order = 6)
     @ApiOperation(value = "修改", notes = "传入shoppingCart")
-    public BaseResponse<Boolean> submit(@RequestBody MenuSaveDTO menu) {
-        return ResultUtils.success(menuService.saveMenu(menu));
+    public BaseResponse<Boolean> submit(@RequestBody List<MenuDetailSaveDTO> menu) {
+        menuDetailService.saveMenuDetail(menu);
+        return ResultUtils.success(true);
     }
 
     /**
@@ -54,8 +59,8 @@ public class MenuController {
     @PostMapping("/update")
     @ApiOperationSupport(order = 6)
     @ApiOperation(value = "修改", notes = "传入shoppingCart")
-    public BaseResponse<Boolean> update(@RequestBody Menu menu) {
-        return ResultUtils.success(menuService.updateById(menu));
+    public BaseResponse<Boolean> update(@RequestBody MenuDetail menu) {
+        return ResultUtils.success(menuDetailService.updateById(menu));
     }
 
     /**
@@ -65,6 +70,6 @@ public class MenuController {
     @ApiOperationSupport(order = 7)
     @ApiOperation(value = "逻辑删除", notes = "传入ids")
     public BaseResponse<Boolean> remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-        return ResultUtils.success(menuService.removeBatchByIds(Collections.singleton(ids)));
+        return ResultUtils.success(menuDetailService.removeBatchByIds(Collections.singleton(ids)));
     }
 }

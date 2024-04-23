@@ -14,6 +14,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.study.lovetoolbox.constant.UserConstant.USER_LOGIN_STATE;
 
 @Component
@@ -37,6 +40,16 @@ public class AuthUtils {
         }
         throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
 
+    }
+
+    public static List<Long> getCurrentUserAndRelationUser() {
+        List<Long> result = new ArrayList<>();
+        UserVO currentUser = getCurrentUser();
+        result.add(currentUser.getId());
+        if (ObjectUtils.isNotEmpty(currentUser.getRelationId())) {
+            result.add(currentUser.getRelationId());
+        }
+        return result;
     }
 
     private static HttpServletRequest getRequest() {

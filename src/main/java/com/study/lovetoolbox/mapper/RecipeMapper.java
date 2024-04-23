@@ -2,6 +2,9 @@ package com.study.lovetoolbox.mapper;
 
 import com.study.lovetoolbox.model.entity.Recipe;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author cy062
@@ -10,6 +13,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.study.lovetoolbox.model.entity.Recipe
 */
 public interface RecipeMapper extends BaseMapper<Recipe> {
+
+    List<String> getList(@Param("ids") List<Long> ids);
 
 }
 

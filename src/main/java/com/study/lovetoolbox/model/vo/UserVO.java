@@ -37,9 +37,9 @@ public class UserVO implements Serializable {
     private String userRole;
 
     /**
-     * 创建时间
+     * relationId
      */
-    private Date createTime;
+    private Long relationId;
 
     private static final long serialVersionUID = 1L;
 }

@@ -20,4 +20,10 @@
         is_enable_price,is_enable_picture,create_time,
         update_time,is_deleted
     </sql>
+    <select id="getList" resultType="java.lang.String">
+        select recipe_name from k_recipe where user_id in
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

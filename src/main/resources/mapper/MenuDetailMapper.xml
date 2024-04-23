@@ -2,25 +2,26 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.study.lovetoolbox.mapper.RecipeDetailMapper">
+<mapper namespace="com.study.lovetoolbox.mapper.MenuDetailMapper">
 
-    <resultMap id="BaseResultMap" type="com.study.lovetoolbox.model.entity.RecipeDetail">
+    <resultMap id="BaseResultMap" type="com.study.lovetoolbox.model.entity.MenuDetail">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="recipeId" column="recipe_id" jdbcType="BIGINT"/>
+            <result property="menuId" column="menu_id" jdbcType="BIGINT"/>
+            <result property="recipeDetailId" column="recipe_detail_id" jdbcType="BIGINT"/>
             <result property="foodName" column="food_name" jdbcType="VARCHAR"/>
             <result property="foodIcon" column="food_icon" jdbcType="VARCHAR"/>
-            <result property="foodCategoryId" column="food_category_id" jdbcType="BIGINT"/>
             <result property="price" column="price" jdbcType="DECIMAL"/>
-            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="createUser" column="create_user" jdbcType="BIGINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateUser" column="update_user" jdbcType="BIGINT"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,recipt_id,food_name,
-        food_icon,food_category_id,price,
-        user_id,create_time,update_time,
-        is_deleted
+        id,menu_id,recipe_detail_id,
+        food_name,food_icon,price,
+        create_user,create_time,update_user,
+        update_time,is_deleted
     </sql>
 </mapper>

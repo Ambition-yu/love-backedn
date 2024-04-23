@@ -1,19 +1,18 @@
 package com.study.lovetoolbox.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
+import lombok.Data;
 
 /**
- * 菜单表
- * @TableName k_menu
+ * 用户消息表
+ * @TableName user_notice
  */
-@TableName(value ="k_menu")
+@TableName(value ="user_notice")
 @Data
-public class Menu implements Serializable {
+public class UserNotice implements Serializable {
     /**
      * id
      */
@@ -21,33 +20,45 @@ public class Menu implements Serializable {
     private Long id;
 
     /**
-     * 日期
+     * 接收人id
      */
-    private Date menuDate;
+    @TableField(value = "user_id")
+    private Long userId;
 
     /**
-     * 餐时
+     * 消息内容
      */
-    private Integer mealTime;
+    @TableField(value = "content")
+    private String content;
 
     /**
-     * 创建人
+     * 状态 0正常 1过期
      */
+    @TableField(value = "state")
+    private Integer state;
+
+    /**
+     * create_user
+     */
+    @TableField(value = "create_user")
     private Long createUser;
 
     /**
      * 创建时间
      */
+    @TableField(value = "create_time")
     private Date createTime;
 
     /**
      * 更新时间
      */
+    @TableField(value = "update_time")
     private Date updateTime;
 
     /**
      * 是否删除
      */
+    @TableField(value = "is_deleted")
     @TableLogic
     private Integer isDeleted;
 

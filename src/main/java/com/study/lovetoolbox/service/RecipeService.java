@@ -1,7 +1,10 @@
 package com.study.lovetoolbox.service;
 
+import com.study.lovetoolbox.model.dto.recipe.RecipeDTO;
 import com.study.lovetoolbox.model.entity.Recipe;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author cy062
@@ -10,4 +13,18 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface RecipeService extends IService<Recipe> {
 
+    /**
+     * 保存食谱
+     *
+     * @param dto
+     * @return
+     */
+    boolean saveRecipe(RecipeDTO dto);
+
+    /**
+     * 获取食谱列表
+     *
+     * @return
+     */
+    List<String> getList();
 }

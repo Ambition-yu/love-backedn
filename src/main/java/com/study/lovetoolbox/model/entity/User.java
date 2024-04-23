@@ -64,6 +64,11 @@ public class User implements Serializable {
     private String userRole;
 
     /**
+     * 关联用户id
+     */
+    private Long relationId;
+
+    /**
      * 创建时间
      */
     private Date createTime;

@@ -1,4 +1,4 @@
-package com.study.lovetoolbox.model.entity;
+package com.study.lovetoolbox.model.vo;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
@@ -11,13 +11,11 @@ import java.util.Date;
  * 食谱明细表
  * @TableName k_recipe_detail
  */
-@TableName(value ="k_recipe_detail")
 @Data
-public class RecipeDetail implements Serializable {
+public class RecipeDetailVO implements Serializable {
     /**
      * id
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
@@ -50,21 +48,6 @@ public class RecipeDetail implements Serializable {
      */
     private Long userId;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 是否删除
-     */
-    @TableLogic
-    private Integer isDeleted;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

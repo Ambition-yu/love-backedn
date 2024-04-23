@@ -3,9 +3,7 @@ package com.study.lovetoolbox.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.lovetoolbox.model.dto.user.UserQueryDTO;
-import com.study.lovetoolbox.model.dto.user.UserRegisterDTO;
 import com.study.lovetoolbox.model.entity.User;
-import com.study.lovetoolbox.model.vo.LoginUserVO;
 import com.study.lovetoolbox.model.vo.UserVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,30 +16,38 @@ import java.util.List;
 public interface UserService extends IService<User> {
 
     /**
-     * 用户注册
-     *
-     * @param dto
-     * @return id 新用户id
-     */
-    long userRegister(UserRegisterDTO dto);
-
-    /**
-     * 用户登录
+     * 用户登录/注册
      *
      * @param userAccount  用户账户
      * @param userPassword 用户密码
      * @param request
+     * @param type 1 account 2 phone
      * @return 脱敏后的用户信息
      */
-    LoginUserVO userLogin(String userAccount, String userPassword, HttpServletRequest request);
+    UserVO userLogin(String userAccount, String userPassword, HttpServletRequest request, String type);
 
     /**
-     * 获取当前登录用户
+     * 申请绑定关系
      *
-     * @param request
+     * @param account
      * @return
      */
-    UserVO getLoginUser(HttpServletRequest request);
+    boolean applyBindingRelationship(String account);
+
+    /**
+     * 绑定关系
+     *
+     * @param id 消息id
+     * @return
+     */
+    boolean bindingRelationship(Long id);
+
+    /**
+     * 解绑
+     *
+     * @return
+     */
+    boolean unbindRelationship();
 
     /**
      * 是否为管理员
@@ -52,7 +58,7 @@ public interface UserService extends IService<User> {
     boolean isAdmin(User user);
 
     /**
-     * 用户注销
+     * 退出登录
      *
      * @param request
      * @return

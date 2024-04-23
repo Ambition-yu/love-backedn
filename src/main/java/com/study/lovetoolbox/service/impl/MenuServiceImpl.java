@@ -1,10 +1,16 @@
 package com.study.lovetoolbox.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.study.lovetoolbox.model.entity.Menu;
-import com.study.lovetoolbox.service.MenuService;
 import com.study.lovetoolbox.mapper.MenuMapper;
+import com.study.lovetoolbox.model.dto.menu.MenuSaveDTO;
+import com.study.lovetoolbox.model.entity.Menu;
+import com.study.lovetoolbox.model.vo.MenuListVO;
+import com.study.lovetoolbox.service.MenuService;
+import com.study.lovetoolbox.utils.AuthUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author cy062
@@ -15,6 +21,18 @@ import org.springframework.stereotype.Service;
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
     implements MenuService{
 
+    @Override
+    public boolean saveMenu(MenuSaveDTO dto) {
+        Menu menu = new Menu();
+        BeanUtils.copyProperties(dto, menu);
+        menu.setCreateUser(AuthUtils.getCurrentUser().getId());
+        return save(menu);
+    }
+
+    @Override
+    public List<MenuListVO> menuList() {
+        return baseMapper.menuList(AuthUtils.getCurrentUserAndRelationUser(), 1);
+    }
 }
 
 
