@@ -1,7 +1,11 @@
 package com.study.lovetoolbox.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.study.lovetoolbox.model.dto.notice.NoticePageDTO;
 import com.study.lovetoolbox.model.entity.UserNotice;
+
+import java.util.List;
 
 /**
 * @author cy062
@@ -9,5 +13,10 @@ import com.study.lovetoolbox.model.entity.UserNotice;
 * @createDate 2024-04-18 15:15:56
 */
 public interface UserNoticeService extends IService<UserNotice> {
+
+
+    List<UserNotice> getUserNoticeList(Integer status);
+
+    IPage<UserNotice> getUserNoticePage(IPage page, NoticePageDTO dto);
 
 }

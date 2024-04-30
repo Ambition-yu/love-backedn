@@ -3,12 +3,9 @@ package com.study.lovetoolbox.controller;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.study.lovetoolbox.common.BaseResponse;
 import com.study.lovetoolbox.common.ResultUtils;
-import com.study.lovetoolbox.model.dto.menu.MenuDetailSaveDTO;
-import com.study.lovetoolbox.model.dto.menu.MenuSaveDTO;
-import com.study.lovetoolbox.model.entity.Menu;
+import com.study.lovetoolbox.model.dto.menu.MenuDetailSaveMainDTO;
 import com.study.lovetoolbox.model.entity.MenuDetail;
 import com.study.lovetoolbox.model.vo.MenuDetailListVO;
-import com.study.lovetoolbox.model.vo.MenuListVO;
 import com.study.lovetoolbox.service.MenuDetailService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -48,7 +45,7 @@ public class MenuDetailController {
     @PostMapping("/submit")
     @ApiOperationSupport(order = 6)
     @ApiOperation(value = "修改", notes = "传入shoppingCart")
-    public BaseResponse<Boolean> submit(@RequestBody List<MenuDetailSaveDTO> menu) {
+    public BaseResponse<Boolean> submit(@RequestBody MenuDetailSaveMainDTO menu) {
         menuDetailService.saveMenuDetail(menu);
         return ResultUtils.success(true);
     }

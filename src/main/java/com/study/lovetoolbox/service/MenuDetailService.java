@@ -1,6 +1,6 @@
 package com.study.lovetoolbox.service;
 
-import com.study.lovetoolbox.model.dto.menu.MenuDetailSaveDTO;
+import com.study.lovetoolbox.model.dto.menu.MenuDetailSaveMainDTO;
 import com.study.lovetoolbox.model.entity.MenuDetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.lovetoolbox.model.vo.MenuDetailListVO;
@@ -16,6 +16,6 @@ public interface MenuDetailService extends IService<MenuDetail> {
 
     List<MenuDetailListVO> getList(Long id);
 
-    void saveMenuDetail(List<MenuDetailSaveDTO> dto);
+    void saveMenuDetail(MenuDetailSaveMainDTO dto);
 
 }

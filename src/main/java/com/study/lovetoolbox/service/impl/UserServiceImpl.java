@@ -2,6 +2,7 @@ package com.study.lovetoolbox.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.lovetoolbox.common.ErrorCode;
 import com.study.lovetoolbox.constant.CommonConstant;
@@ -12,8 +13,10 @@ import com.study.lovetoolbox.model.dto.user.UserQueryDTO;
 import com.study.lovetoolbox.model.dto.user.UserRegisterDTO;
 import com.study.lovetoolbox.model.entity.User;
 import com.study.lovetoolbox.model.entity.UserNotice;
+import com.study.lovetoolbox.model.enums.NoticeTypeEnum;
 import com.study.lovetoolbox.model.enums.UserRoleEnum;
 import com.study.lovetoolbox.model.vo.UserVO;
+import com.study.lovetoolbox.mq.ProductMQ;
 import com.study.lovetoolbox.service.UserNoticeService;
 import com.study.lovetoolbox.service.UserService;
 import com.study.lovetoolbox.utils.AuthUtils;
@@ -21,7 +24,6 @@ import com.study.lovetoolbox.utils.SqlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -43,10 +45,9 @@ import static com.study.lovetoolbox.constant.UserConstant.USER_LOGIN_STATE;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Resource
-    private UserNoticeService userNoticeService;
-
+    private ProductMQ productMQ;
     @Resource
-    private RedissonClient redissonClient;
+    private UserNoticeService userNoticeService;
 
     /**
      * 盐值，混淆密码
@@ -102,18 +103,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean applyBindingRelationship(String account) {
-        User user = getById(AuthUtils.getCurrentUser().getId());
-        ThrowUtils.throwIf(ObjectUtils.isNotEmpty(user.getRelationId()), ErrorCode.OPERATION_ERROR, "已有关系绑定人");
+        ThrowUtils.throwIf(ObjectUtils.isNotEmpty(AuthUtils.getCurrentUser().getRelationId()), ErrorCode.OPERATION_ERROR, "已有关系绑定人");
         // 查询用户是否存在
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_account", account);
         User userRelation = getOne(queryWrapper);
         ThrowUtils.throwIf(ObjectUtils.isEmpty(userRelation), ErrorCode.NOT_FOUND_ERROR, "该用户不存在");
-        UserNotice notice = new UserNotice();
-        notice.setCreateUser(user.getId());
-        notice.setUserId(userRelation.getId());
-        notice.setContent("【申请消息】用户【"+userRelation.getUserName()+"】申请与您绑定关系");
-        return userNoticeService.save(notice);
+        ThrowUtils.throwIf(ObjectUtils.isNotEmpty(userRelation.getRelationId()), ErrorCode.OPERATION_ERROR, "对方已有关系绑定人");
+        String message = AuthUtils.getCurrentUser().getId() + StringPool.COMMA + userRelation.getRelationId() + StringPool.COMMA + userRelation.getUserName() + StringPool.COMMA + CommonConstant.BIND;
+        productMQ.sendMessage(NoticeTypeEnum.APPLY.getCode(), message);
+        return true;
     }
 
     @Override
@@ -122,9 +121,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         List<User> list = new ArrayList<>();
         User userA = getById(notice.getUserId());
         User userB = getById(notice.getCreateUser());
-        list.add(userA);
-        list.add(userB);
         if (ObjectUtils.isNotEmpty(userA) && ObjectUtils.isNotEmpty(userB)) {
+            list.add(userA);
+            list.add(userB);
             userA.setRelationId(notice.getCreateUser());
             userB.setRelationId(notice.getUserId());
             return updateBatchById(list);
@@ -139,7 +138,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             List<Long> ids = new ArrayList<>();
             ids.add(currentUser.getId());
             ids.add(currentUser.getRelationId());
-            return baseMapper.unbindRelation(ids);
+            boolean unbind = baseMapper.unbindRelation(ids);
+            User user = getById(currentUser.getRelationId());
+            String message = currentUser.getId() + StringPool.COMMA + currentUser.getRelationId() + StringPool.COMMA + user.getUserName() + StringPool.COMMA + CommonConstant.UNBIND;
+            productMQ.sendMessage(NoticeTypeEnum.APPLY.getCode(), message);
+            return unbind;
         }
         return false;
     }
@@ -162,6 +165,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 移除登录态
         request.getSession().removeAttribute(USER_LOGIN_STATE);
         return true;
+    }
+
+    @Override
+    public boolean deleteUser(HttpServletRequest request) {
+        UserVO currentUser = AuthUtils.getCurrentUser();
+        // 移除登录态
+        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        // 关系解绑
+        unbindRelationship();
+        return removeById(currentUser.getId());
     }
 
     @Override

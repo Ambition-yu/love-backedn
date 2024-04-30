@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.lovetoolbox.mapper.MqLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.study.lovetoolbox.model.entity.MqLog">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="queue" column="queue" jdbcType="VARCHAR"/>
+            <result property="message" column="message" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,queue,message,
+        create_time
+    </sql>
+</mapper>

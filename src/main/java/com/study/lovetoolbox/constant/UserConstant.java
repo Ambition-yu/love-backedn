@@ -28,5 +28,6 @@ public interface UserConstant {
      */
     String BAN_ROLE = "ban";
 
+
     // endregion
 }

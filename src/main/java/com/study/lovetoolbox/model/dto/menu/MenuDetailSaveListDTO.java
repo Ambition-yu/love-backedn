@@ -1,13 +1,13 @@
 package com.study.lovetoolbox.model.dto.menu;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
-public class MenuDetailSaveDTO {
+public class MenuDetailSaveListDTO {
 
     /**
      * menu id
@@ -17,25 +17,25 @@ public class MenuDetailSaveDTO {
     /**
      * 食物id
      */
-    @TableField(value = "recipe_detail_id")
+    @ApiModelProperty(value = "recipe_detail_id")
     private Long recipeDetailId;
 
     /**
      * 食物名
      */
-    @TableField(value = "food_name")
+    @ApiModelProperty(value = "food_name")
     private String foodName;
 
     /**
      * 食物图片
      */
-    @TableField(value = "food_icon")
+    @ApiModelProperty(value = "food_icon")
     private String foodIcon;
 
     /**
      * 价格
      */
-    @TableField(value = "price")
+    @ApiModelProperty(value = "price")
     private BigDecimal price;
 
 }

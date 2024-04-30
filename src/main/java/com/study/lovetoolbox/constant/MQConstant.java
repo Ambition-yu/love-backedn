@@ -13,11 +13,18 @@ public interface MQConstant {
     /**
      * 路由键
      */
-    String ROUTING_KEY = "love-key";
+    String ROUTING_KEY_MENU = "love-key-menu";
+
+    String ROUTING_KEY_APPLY = "love-key-apply";
 
     /**
-     * 队列
+     * 队列-菜单
      */
-    String QUEUE = "love-queue";
-    
+    String QUEUE_MENU = "love-menu-queue";
+
+    /**
+     * 队列-申请
+     */
+    String QUEUE_APPLY = "love-apply-queue";
+
 }

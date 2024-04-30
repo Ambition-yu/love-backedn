@@ -1,9 +1,10 @@
 package com.study.lovetoolbox.model.dto.recipe;
 
+import com.study.lovetoolbox.model.dto.common.Query;
 import lombok.Data;
 
 @Data
-public class RecipeDetailListDTO {
+public class RecipeDetailListDTO extends Query {
 
     /**
      * 食谱id
@@ -13,12 +14,4 @@ public class RecipeDetailListDTO {
      * 分类id
      */
     private Long categoryId;
-
-    private long current;
-    private long size;
-
-    {
-        current = 1;
-        size = 10;
-    }
 }

@@ -24,22 +24,22 @@ import static com.study.lovetoolbox.constant.UserConstant.USER_LOGIN_STATE;
 public class AuthUtils {
 
     public static UserVO getCurrentUser() {
-
         HttpServletRequest request = getRequest();
 
         if (ObjectUtils.isNotEmpty(request)) {
             // 先判断是否已登录
             Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
             UserVO result = new UserVO();
-            BeanUtils.copyProperties(userObj, result);
-            if (ObjectUtils.isEmpty(result) || ObjectUtils.isEmpty(result.getId())) {
+            if (ObjectUtils.isEmpty(userObj)) {
                 throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
-            };
-
+            }
+            BeanUtils.copyProperties(userObj, result);
+            if (ObjectUtils.isEmpty(result.getId())) {
+                throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+            }
             return result;
         }
         throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
-
     }
 
     public static List<Long> getCurrentUserAndRelationUser() {

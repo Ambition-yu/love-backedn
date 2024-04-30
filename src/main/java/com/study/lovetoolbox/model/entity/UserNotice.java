@@ -1,10 +1,10 @@
 package com.study.lovetoolbox.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 用户消息表
@@ -36,9 +36,8 @@ public class UserNotice implements Serializable {
      */
     @TableField(value = "state")
     private Integer state;
-
     /**
-     * create_user
+     * 创建人id
      */
     @TableField(value = "create_user")
     private Long createUser;
@@ -48,12 +47,6 @@ public class UserNotice implements Serializable {
      */
     @TableField(value = "create_time")
     private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    @TableField(value = "update_time")
-    private Date updateTime;
 
     /**
      * 是否删除

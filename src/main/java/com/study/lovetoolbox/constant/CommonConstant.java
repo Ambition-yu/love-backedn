@@ -15,5 +15,12 @@ public interface CommonConstant {
      * 降序
      */
     String SORT_ORDER_DESC = " descend";
-    
+
+    String BIND = "绑定";
+
+    String UNBIND = "解绑";
+
+    String GENERATE = "生成";
+
+    String UPDATE = "更新";
 }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.study.lovetoolbox.annotation.AuthCheck;
 import com.study.lovetoolbox.common.BaseResponse;
-import com.study.lovetoolbox.common.DeleteRequest;
 import com.study.lovetoolbox.common.ErrorCode;
 import com.study.lovetoolbox.common.ResultUtils;
 import com.study.lovetoolbox.constant.UserConstant;
@@ -101,8 +100,8 @@ public class UserController {
     @PostMapping("/binding-relationship")
     @ApiOperationSupport(order = 2)
     @ApiOperation(value = "申请绑定", notes = "消息id")
-    public BaseResponse<Boolean> bindingRelationship(Long id) {
-        return ResultUtils.success(userService.bindingRelationship(id));
+    public BaseResponse<Boolean> bindingRelationship(String id) {
+        return ResultUtils.success(userService.bindingRelationship(Long.valueOf(id)));
     }
 
     /**
@@ -172,18 +171,11 @@ public class UserController {
 
     /**
      * 用户注销-删除账号
-     *
-     * @param deleteRequest
-     * @param request
      * @return
      */
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
-        if (deleteRequest == null || deleteRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        boolean b = userService.removeById(deleteRequest.getId());
-        return ResultUtils.success(b);
+    public BaseResponse<Boolean> deleteUser(HttpServletRequest request) {
+        return ResultUtils.success(userService.deleteUser(request));
     }
 
     /**
